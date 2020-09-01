@@ -16,13 +16,18 @@ export const ContentForm = styled.div`
 
   width: 75%;
 
+  img {
+    width: 25%;
+  }
+
   form {
-    margin: 80px 0;
+    margin: 25px 0;
     width: 340px;
     text-align: left;
 
     h1 {
       margin-bottom: 24px;
+      text-align: center;
     }
 
     .multi-select {
