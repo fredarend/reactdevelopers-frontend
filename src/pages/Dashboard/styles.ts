@@ -29,14 +29,6 @@ export const ContentForm = styled.div`
       margin-bottom: 24px;
       text-align: center;
     }
-
-    .multi-select {
-      --rmsc-hover: #4a4554;
-      --rmsc-selected: #4a4554;
-      --rmsc-border: 2px solid #232129;
-      --rmsc-bg: #232129;
-      --rmsc-h: 47px;
-    }
   }
 `;
 

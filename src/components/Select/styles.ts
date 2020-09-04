@@ -11,7 +11,7 @@ interface ContainerProps {
 export const Container = styled.div<ContainerProps>`
   background: #232129;
   border-radius: 5px;
-  padding: 12px;
+  padding: 5px;
   width: 100%;
 
   border: 2px solid #232129;
@@ -26,42 +26,50 @@ export const Container = styled.div<ContainerProps>`
   }
 
   ${props =>
-    props.isErrored &&
-    css`
-      border-color: #c53030;
-    `}
-
-  ${props =>
     props.isFocused &&
     css`
-      color: #009ee2;
+      > svg {
+        color: #009ee2;
+      }
       border-color: #009ee2;
     `}
 
   ${props =>
     props.isFilled &&
     css`
-      color: #009ee2;
+      border-color: #009ee2;
     `}
 
-  input {
-    flex: 1;
-    color: #eee;
+    ${props =>
+    props.isErrored &&
+    css`
+      border-color: #c53030;
+    `}
 
-    background: transparent;
+  > div {
+    width: 100%;
     border: 0;
 
-    &::placeholder {
-      color: #666360;
+    > div {
+      flex: 1;
+
+      background: #232129;
+      border: none;
+
+      .react-select__option {
+        border: none;
+        background-color: #232129;
+      }
     }
   }
 
-  svg {
-    margin-right: 16px;
+  > svg {
+    margin: 0 10px 0 5px;
   }
 `;
 
 export const Error = styled(Tooltip)`
+  width: 11% !important;
   height: 20px;
   margin-left: 16px;
 
