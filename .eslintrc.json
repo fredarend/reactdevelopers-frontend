@@ -36,6 +36,7 @@
     "no-unused-expressions": "off",
     "react/prop-types": "off",
     "prettier/prettier": "error",
+    "camelcase": "off",
     "react/jsx-props-no-spreading": "off",
     "import/extensions": [
       "error",
