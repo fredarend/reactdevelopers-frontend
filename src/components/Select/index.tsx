@@ -73,7 +73,7 @@ const Select: React.FC<ComponentProps> = props => {
         <ReactSelect
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
-          defaultValue={null}
+          defaultValue={defaultValue}
           ref={selectRef}
           {...rest}
         />
