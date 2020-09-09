@@ -35,7 +35,6 @@ const Select: React.FC<ComponentProps> = props => {
   const { fieldName, defaultValue, registerField, error } = useField(name);
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
 
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
@@ -43,8 +42,6 @@ const Select: React.FC<ComponentProps> = props => {
 
   const handleInputBlur = useCallback(() => {
     setIsFocused(false);
-
-    setIsFilled(!!inputRef.current?.value);
   }, []);
 
   useEffect(() => {
@@ -68,7 +65,7 @@ const Select: React.FC<ComponentProps> = props => {
 
   return (
     <>
-      <Container isErrored={!!error} isFilled={isFilled} isFocused={isFocused}>
+      <Container isErrored={!!error} isFocused={isFocused}>
         {Icon && <Icon size={20} />}
         <ReactSelect
           onFocus={handleInputFocus}

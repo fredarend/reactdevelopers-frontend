@@ -46,8 +46,8 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signOut = useCallback(() => {
-    const token = localStorage.removeItem('@Icetec:token');
-    const user = localStorage.removeItem('@Icetec:user');
+    // const token = localStorage.removeItem('@Icetec:token');
+    // const user = localStorage.removeItem('@Icetec:user');
 
     setData({} as AuthState);
   }, []);

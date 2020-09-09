@@ -4,7 +4,6 @@ import Tooltip from '../Toltip';
 
 interface ContainerProps {
   isFocused: boolean;
-  isFilled: boolean;
   isErrored: boolean;
 }
 
@@ -35,12 +34,6 @@ export const Container = styled.div<ContainerProps>`
     `}
 
   ${props =>
-    props.isFilled &&
-    css`
-      border-color: #009ee2;
-    `}
-
-    ${props =>
     props.isErrored &&
     css`
       border-color: #c53030;
