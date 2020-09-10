@@ -26,8 +26,6 @@ interface InputProps extends SelectHTMLAttributes<HTMLSelectElement> {
 type ComponentProps = PropsSelect & InputProps;
 
 const Select: React.FC<ComponentProps> = props => {
-  const inputRef = useRef<HTMLSelectElement>(null);
-
   const { name, ...rest } = props as PropsSelect;
   const { icon: Icon } = props as InputProps;
 
@@ -59,6 +57,9 @@ const Select: React.FC<ComponentProps> = props => {
           return '';
         }
         return ref.state.value.value;
+      },
+      setValue: (ref, value) => {
+        ref.select.setValue(value || null);
       },
     });
   }, [fieldName, registerField, rest.isMulti]);

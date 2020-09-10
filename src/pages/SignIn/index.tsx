@@ -75,12 +75,18 @@ const SignIn: React.FC = () => {
         <Form ref={formRef} onSubmit={handleSubmit}>
           <h1>Efetue seu login</h1>
 
-          <Input name="email" placeholder="Email" icon={FiMail} />
+          <Input
+            name="email"
+            placeholder="Email"
+            icon={FiMail}
+            hidden={false}
+          />
           <Input
             name="password"
             type="password"
             placeholder="Password"
             icon={FiLock}
+            hidden={false}
           />
 
           <Button type="submit">Entrar</Button>

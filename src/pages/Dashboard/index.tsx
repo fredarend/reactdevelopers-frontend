@@ -62,6 +62,7 @@ const multiSelectOptions: OptionType[] = [
 
 const Dashboard: React.FC = () => {
   const [developers, setDevelopers] = useState<DevelopersData[]>([]);
+  const [editDev, setEditDev] = useState(false);
 
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
@@ -74,7 +75,7 @@ const Dashboard: React.FC = () => {
     } catch (err) {
       addToast({
         type: 'error',
-        title: 'Não foi possível remover o Dev',
+        title: 'Não foi possível carregar os desenvolvedores.',
       });
     }
   }, [setDevelopers, addToast]);
@@ -133,6 +134,88 @@ const Dashboard: React.FC = () => {
     [addToast, getDevelopers],
   );
 
+  const handleShowDataInForm = useCallback(
+    async (id: number) => {
+      try {
+        setEditDev(true);
+
+        const { data } = await api.get(`/developers/?id=${id}`);
+        const { developer } = data;
+
+        formRef.current?.setFieldValue('id', id);
+        formRef.current?.setFieldValue('name', developer.name);
+        formRef.current?.setFieldValue('email', developer.email);
+        formRef.current?.setFieldValue('age', developer.age);
+        formRef.current?.setFieldValue('url_linkedin', developer.url_linkedin);
+        formRef.current?.setData({ technologies: developer.technologies });
+      } catch (err) {
+        addToast({
+          type: 'error',
+          title: 'Ocorreu um erro ao carregar os dados do dev.',
+        });
+      }
+    },
+    [addToast],
+  );
+
+  const handleCancelEdit = useCallback(() => {
+    setEditDev(false);
+    formRef.current?.reset();
+    const select = formRef.current?.getFieldRef('technologies');
+    select.select.clearValue();
+  }, []);
+
+  const handleEditDev = useCallback(
+    async (data: DevelopersData) => {
+      try {
+        formRef.current?.setErrors({});
+
+        const schema = Yup.object().shape({
+          id: Yup.number().required('Id obrigatório'),
+          name: Yup.string().required('Nome obrigatório!'),
+          email: Yup.string().email().required('Email obrigatório!'),
+          age: Yup.number().required('Idade obrigatória!'),
+          url_linkedin: Yup.string().required('URL obrigatória!'),
+          technologies: Yup.string().required(
+            'Selecione pelo menos uma tecnologia.',
+          ),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        await api.put(`/developers/${data.id}`, data);
+
+        addToast({
+          type: 'success',
+          title: 'Dev atualizado com sucesso!',
+        });
+
+        formRef.current?.reset();
+        const select = formRef.current?.getFieldRef('technologies');
+        select.select.clearValue();
+        setEditDev(false);
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+
+          return;
+        }
+
+        addToast({
+          type: 'error',
+          title: 'Erro no cadastro.',
+          description: 'Ocorreu um erro ao editar o dev.',
+        });
+      }
+      getDevelopers();
+    },
+    [addToast, getDevelopers],
+  );
+
   const handleRemoveDev = useCallback(
     async (id: number) => {
       try {
@@ -141,6 +224,8 @@ const Dashboard: React.FC = () => {
           type: 'success',
           title: 'Dev removido com sucesso!',
         });
+
+        handleCancelEdit();
       } catch (err) {
         addToast({
           type: 'error',
@@ -149,23 +234,29 @@ const Dashboard: React.FC = () => {
       }
       getDevelopers();
     },
-    [addToast, getDevelopers],
-  );
 
-  const handleEditDev = useCallback(() => {
-    console.log('teste');
-  }, []);
+    [addToast, getDevelopers, handleCancelEdit],
+  );
 
   return (
     <Container>
       <FormContainer>
-        <img src={logo} alt="Icetec" />
+        <Form ref={formRef} onSubmit={editDev ? handleEditDev : handleAddDev}>
+          <h1>{editDev ? 'Editar dev' : 'Cadastre um dev'}</h1>
 
-        <Form ref={formRef} onSubmit={handleAddDev}>
-          <h1>Cadastre um Dev</h1>
+          {editDev ? (
+            <Input name="id" placeholder="id" type="hidden" hidden />
+          ) : (
+            ''
+          )}
 
-          <Input name="name" placeholder="Nome" icon={FiUser} />
-          <Input name="email" placeholder="Email" icon={FiMail} />
+          <Input name="name" placeholder="Nome" icon={FiUser} hidden={false} />
+          <Input
+            name="email"
+            placeholder="Email"
+            icon={FiMail}
+            hidden={false}
+          />
           <Input
             name="age"
             type="number"
@@ -173,11 +264,13 @@ const Dashboard: React.FC = () => {
             max="99"
             placeholder="Idade"
             icon={FiStar}
+            hidden={false}
           />
           <Input
             name="url_linkedin"
             placeholder="Perfil do Linkedin"
             icon={FiLinkedin}
+            hidden={false}
           />
           <Select
             name="technologies"
@@ -189,7 +282,16 @@ const Dashboard: React.FC = () => {
             icon={FiZap}
             isClearable
           />
-          <Button type="submit">Cadastrar</Button>
+          <Button type="submit">{editDev ? 'Salvar' : 'Cadastrar'}</Button>
+          {editDev ? (
+            <div>
+              <button onClick={handleCancelEdit} type="button">
+                Cancelar
+              </button>
+            </div>
+          ) : (
+            ''
+          )}
         </Form>
       </FormContainer>
       <DevContainer>
@@ -210,7 +312,10 @@ const Dashboard: React.FC = () => {
                 ))}
               </Techs>
               <Actions>
-                <button type="button" onClick={handleEditDev}>
+                <button
+                  type="button"
+                  onClick={() => handleShowDataInForm(developer.id)}
+                >
                   <FiEdit size={18} />
                 </button>
                 <button

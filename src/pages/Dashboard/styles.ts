@@ -29,6 +29,18 @@ export const FormContainer = styled.div`
       margin-bottom: 24px;
       text-align: center;
     }
+
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 5px;
+      button {
+        background: transparent;
+        border: none;
+        color: white;
+      }
+    }
   }
 `;
 

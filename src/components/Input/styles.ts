@@ -5,6 +5,7 @@ import Tooltip from '../Toltip';
 interface ContainerProps {
   isFocused: boolean;
   isErrored: boolean;
+  hidden: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -35,6 +36,14 @@ export const Container = styled.div<ContainerProps>`
     css`
       color: #009ee2;
       border-color: #009ee2;
+    `}
+
+  ${props =>
+    props.hidden &&
+    css`
+      background: transparent;
+      border: none;
+      padding: 0;
     `}
 
   input {
