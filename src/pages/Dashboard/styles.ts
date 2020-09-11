@@ -136,3 +136,48 @@ export const Actions = styled.div`
     }
   }
 `;
+export const Search = styled.div`
+  margin-bottom: 20px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    width: 140px;
+    margin-left: 20px;
+    background: #232129;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 9px 8px 9px 8px;
+    transition: 0.2s;
+
+    &:hover {
+      background: ${darken(0.1, '#232129')};
+    }
+  }
+
+  > div {
+    width: 100%;
+
+    > div {
+      border-radius: 5px;
+      border-color: #232129;
+      background: #232129;
+      color: #232129;
+      transition: 0.2s;
+
+      .react-select__single-value {
+        color: #fff;
+      }
+
+      .react-select__option {
+        border: none;
+        background: #232129;
+        color: #fff;
+      }
+    }
+  }
+`;

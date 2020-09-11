@@ -11,6 +11,7 @@ import {
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import ReactSelect from 'react-select';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 import api from '../../services/api';
@@ -30,6 +31,7 @@ import {
   Info,
   Techs,
   Actions,
+  Search,
 } from './styles';
 
 type Technologies = any[];
@@ -79,6 +81,23 @@ const Dashboard: React.FC = () => {
       });
     }
   }, [setDevelopers, addToast]);
+
+  const handleSearch = useCallback(
+    async action => {
+      try {
+        await api.get(`/developers?tech=${action.value}`).then(response => {
+          setDevelopers(response.data);
+          console.log(response.data);
+        });
+      } catch (err) {
+        addToast({
+          type: 'error',
+          title: 'Não foi possível carregar os desenvolvedores.',
+        });
+      }
+    },
+    [addToast],
+  );
 
   useEffect(() => {
     getDevelopers();
@@ -241,6 +260,7 @@ const Dashboard: React.FC = () => {
   return (
     <Container>
       <FormContainer>
+        <img src={logo} alt="Icetec" />
         <Form ref={formRef} onSubmit={editDev ? handleEditDev : handleAddDev}>
           <h1>{editDev ? 'Editar dev' : 'Cadastre um dev'}</h1>
 
@@ -295,6 +315,18 @@ const Dashboard: React.FC = () => {
         </Form>
       </FormContainer>
       <DevContainer>
+        <Search>
+          <ReactSelect
+            placeholder="Filtrar por tecnologia"
+            options={multiSelectOptions}
+            onChange={handleSearch}
+            className="react-select-container"
+            classNamePrefix="react-select"
+          />
+          <button type="button" onClick={getDevelopers}>
+            Buscar todas
+          </button>
+        </Search>
         {developers.length ? (
           developers.map(developer => (
             <Dev key={developer.id}>
