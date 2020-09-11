@@ -85,10 +85,11 @@ const Dashboard: React.FC = () => {
   const handleSearch = useCallback(
     async action => {
       try {
-        await api.get(`/developers?tech=${action.value}`).then(response => {
-          setDevelopers(response.data);
-          console.log(response.data);
-        });
+        const devs = developers.filter(dev =>
+          dev.technologies.some(tech => tech.id === action.value),
+        );
+
+        setDevelopers(devs);
       } catch (err) {
         addToast({
           type: 'error',
@@ -96,7 +97,7 @@ const Dashboard: React.FC = () => {
         });
       }
     },
-    [addToast],
+    [addToast, developers],
   );
 
   useEffect(() => {
@@ -320,8 +321,10 @@ const Dashboard: React.FC = () => {
             placeholder="Filtrar por tecnologia"
             options={multiSelectOptions}
             onChange={handleSearch}
+            onMenuOpen={getDevelopers}
             className="react-select-container"
             classNamePrefix="react-select"
+            isDisabled={editDev}
           />
           <button type="button" onClick={getDevelopers}>
             Buscar todas
