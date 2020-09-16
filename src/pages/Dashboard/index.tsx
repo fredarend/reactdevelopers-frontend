@@ -321,6 +321,7 @@ const Dashboard: React.FC = () => {
       <DevContainer>
         <Search>
           <ReactSelect
+            name="search_techs"
             placeholder="Filtrar por tecnologia"
             options={multiSelectOptions}
             onChange={handleSearch}
@@ -339,7 +340,7 @@ const Dashboard: React.FC = () => {
               <Info>
                 <a
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   href={developer.url_linkedin}
                 >
                   <h1>{developer.name}</h1>
