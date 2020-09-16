@@ -14,7 +14,8 @@ import * as Yup from 'yup';
 import ReactSelect from 'react-select';
 
 import getValidationErrors from '../../utils/getValidationErrors';
-import api from '../../services/api';
+import { api, config } from '../../services/api';
+import { useAuth } from '../../hooks/auth';
 import { useToast } from '../../hooks/toast';
 
 import logo from '../../assets/logo.svg';
@@ -68,10 +69,11 @@ const Dashboard: React.FC = () => {
 
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
+  const { signOut } = useAuth();
 
   const getDevelopers = useCallback(async () => {
     try {
-      await api.get('/developers').then(response => {
+      await api.get('/developers', config).then(response => {
         setDevelopers(response.data);
       });
     } catch (err) {
@@ -81,6 +83,10 @@ const Dashboard: React.FC = () => {
       });
     }
   }, [setDevelopers, addToast]);
+
+  useEffect(() => {
+    getDevelopers();
+  }, [getDevelopers]);
 
   const handleSearch = useCallback(
     async action => {
@@ -93,16 +99,12 @@ const Dashboard: React.FC = () => {
       } catch (err) {
         addToast({
           type: 'error',
-          title: 'Não foi possível carregar os desenvolvedores.',
+          title: 'Não há desenvolvedores cadastrados.',
         });
       }
     },
     [addToast, developers],
   );
-
-  useEffect(() => {
-    getDevelopers();
-  }, [getDevelopers]);
 
   const handleAddDev = useCallback(
     async (data: DevelopersData) => {
@@ -123,7 +125,7 @@ const Dashboard: React.FC = () => {
           abortEarly: false,
         });
 
-        await api.post('/developers', data);
+        await api.post('/developers', data, config);
 
         addToast({
           type: 'success',
@@ -159,7 +161,7 @@ const Dashboard: React.FC = () => {
       try {
         setEditDev(true);
 
-        const { data } = await api.get(`/developers/?id=${id}`);
+        const { data } = await api.get(`/developers/?id=${id}`, config);
         const { developer } = data;
 
         formRef.current?.setFieldValue('id', id);
@@ -191,7 +193,6 @@ const Dashboard: React.FC = () => {
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
-          id: Yup.number().required('Id obrigatório'),
           name: Yup.string().required('Nome obrigatório!'),
           email: Yup.string().email().required('Email obrigatório!'),
           age: Yup.number().required('Idade obrigatória!'),
@@ -205,7 +206,7 @@ const Dashboard: React.FC = () => {
           abortEarly: false,
         });
 
-        await api.put(`/developers/${data.id}`, data);
+        await api.put(`/developers/${data.id}`, data, config);
 
         addToast({
           type: 'success',
@@ -219,9 +220,8 @@ const Dashboard: React.FC = () => {
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
-
           formRef.current?.setErrors(errors);
-
+          formRef.current?.setFieldValue('id', data.id);
           return;
         }
 
@@ -239,7 +239,7 @@ const Dashboard: React.FC = () => {
   const handleRemoveDev = useCallback(
     async (id: number) => {
       try {
-        await api.delete(`/developers/${id}`);
+        await api.delete(`/developers/${id}`, config);
         addToast({
           type: 'success',
           title: 'Dev removido com sucesso!',
@@ -289,7 +289,7 @@ const Dashboard: React.FC = () => {
           />
           <Input
             name="url_linkedin"
-            placeholder="Perfil do Linkedin"
+            placeholder="URL do Perfil Linkedin"
             icon={FiLinkedin}
             hidden={false}
           />
@@ -314,6 +314,9 @@ const Dashboard: React.FC = () => {
             ''
           )}
         </Form>
+        <button onClick={() => signOut()} type="button">
+          Logout
+        </button>
       </FormContainer>
       <DevContainer>
         <Search>
@@ -334,7 +337,14 @@ const Dashboard: React.FC = () => {
           developers.map(developer => (
             <Dev key={developer.id}>
               <Info>
-                <h1>{developer.name}</h1>
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href={developer.url_linkedin}
+                >
+                  <h1>{developer.name}</h1>
+                </a>
+
                 <p>{developer.email}</p>
                 <p>
                   {developer.age}

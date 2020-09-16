@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
-import api from '../services/api';
+import { api } from '../services/api';
 
 interface AuthState {
   token: string;
@@ -46,8 +46,8 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signOut = useCallback(() => {
-    // const token = localStorage.removeItem('@Icetec:token');
-    // const user = localStorage.removeItem('@Icetec:user');
+    const token = localStorage.removeItem('@Icetec:token');
+    const user = localStorage.removeItem('@Icetec:user');
 
     setData({} as AuthState);
   }, []);

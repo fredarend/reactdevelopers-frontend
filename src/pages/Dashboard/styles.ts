@@ -16,6 +16,15 @@ export const FormContainer = styled.div`
 
   width: 75%;
 
+  > button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+
   img {
     width: 25%;
   }
