@@ -7,6 +7,7 @@ import {
   FiLinkedin,
   FiStar,
   FiZap,
+  FiLoader,
 } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
@@ -66,6 +67,9 @@ const multiSelectOptions: OptionType[] = [
 const Dashboard: React.FC = () => {
   const [developers, setDevelopers] = useState<DevelopersData[]>([]);
   const [editDev, setEditDev] = useState(false);
+  const [isLoadingDevs, setIsLoadingDevs] = useState(false);
+  const [isLoadingAddDev, setIsLoadingAddDev] = useState(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
@@ -73,14 +77,18 @@ const Dashboard: React.FC = () => {
 
   const getDevelopers = useCallback(async () => {
     try {
+      setIsLoadingDevs(true);
       await api.get('/developers', config).then(response => {
         setDevelopers(response.data);
       });
+      setIsLoadingDevs(false);
     } catch (err) {
+      setIsLoadingDevs(true);
       addToast({
         type: 'error',
         title: 'Não foi possível carregar os desenvolvedores.',
       });
+      setIsLoadingDevs(false);
     }
   }, [setDevelopers, addToast]);
 
@@ -124,7 +132,7 @@ const Dashboard: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
-
+        setIsLoadingAddDev(true);
         await api.post('/developers', data, config);
 
         addToast({
@@ -135,6 +143,7 @@ const Dashboard: React.FC = () => {
         formRef.current?.reset();
         const select = formRef.current?.getFieldRef('technologies');
         select.select.clearValue();
+        setIsLoadingAddDev(false);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -143,13 +152,14 @@ const Dashboard: React.FC = () => {
 
           return;
         }
-
+        setIsLoadingAddDev(true);
         addToast({
           type: 'error',
           title: 'Erro no cadastro.',
           description:
             'Ocorreu um erro ao efetuar o cadastro do desenvolvedor.',
         });
+        setIsLoadingAddDev(false);
       }
       getDevelopers();
     },
@@ -160,7 +170,6 @@ const Dashboard: React.FC = () => {
     async (id: number) => {
       try {
         setEditDev(true);
-
         const { data } = await api.get(`/developers/?id=${id}`, config);
         const { developer } = data;
 
@@ -239,18 +248,22 @@ const Dashboard: React.FC = () => {
   const handleRemoveDev = useCallback(
     async (id: number) => {
       try {
+        setIsLoadingDelete(true);
+
         await api.delete(`/developers/${id}`, config);
         addToast({
           type: 'success',
           title: 'Dev removido com sucesso!',
         });
-
+        setIsLoadingDelete(false);
         handleCancelEdit();
       } catch (err) {
+        setIsLoadingDelete(true);
         addToast({
           type: 'error',
           title: 'Aconteceu um problema ao remover o dev.',
         });
+        setIsLoadingDelete(false);
       }
       getDevelopers();
     },
@@ -303,7 +316,11 @@ const Dashboard: React.FC = () => {
             icon={FiZap}
             isClearable
           />
-          <Button type="submit">{editDev ? 'Salvar' : 'Cadastrar'}</Button>
+
+          <Button disabled={isLoadingAddDev} type="submit">
+            {isLoadingAddDev ? <FiLoader size={20} /> : ''}
+            {editDev && !isLoadingAddDev ? 'Salvar' : 'Cadastrar'}
+          </Button>
           {editDev ? (
             <div>
               <button onClick={handleCancelEdit} type="button">
@@ -334,6 +351,7 @@ const Dashboard: React.FC = () => {
             Buscar todas
           </button>
         </Search>
+        {isLoadingDevs && <FiLoader className="loading-devs" size={20} />}
         {developers.length ? (
           developers.map(developer => (
             <Dev key={developer.id}>
@@ -365,6 +383,7 @@ const Dashboard: React.FC = () => {
                   <FiEdit size={18} />
                 </button>
                 <button
+                  disabled={isLoadingDelete}
                   type="button"
                   onClick={() => handleRemoveDev(developer.id)}
                 >

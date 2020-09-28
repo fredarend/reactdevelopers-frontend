@@ -27,5 +27,20 @@ export const Content = styled.div`
     h1 {
       margin-bottom: 24px;
     }
+
+    button {
+      svg {
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
   }
 `;

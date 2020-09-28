@@ -1,5 +1,5 @@
-import React, { useRef, useCallback } from 'react';
-import { FiMail, FiLock } from 'react-icons/fi';
+import React, { useRef, useCallback, useState } from 'react';
+import { FiMail, FiLock, FiLoader } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
@@ -22,6 +22,8 @@ interface SignInFormData {
 }
 
 const SignIn: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
@@ -43,10 +45,14 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
+        setIsLoading(true);
+
         await signIn({
           email: data.email,
           password: data.password,
         });
+
+        setIsLoading(false);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -55,13 +61,13 @@ const SignIn: React.FC = () => {
 
           return;
         }
-
         addToast({
           type: 'error',
           title: 'Erro na autenticação.',
           description:
             'Ocorreu um erro ao efetuar login, verifique as credenciais.',
         });
+        setIsLoading(false);
       }
     },
     [signIn, addToast],
@@ -89,7 +95,9 @@ const SignIn: React.FC = () => {
             hidden={false}
           />
 
-          <Button type="submit">Entrar</Button>
+          <Button disabled={isLoading} type="submit">
+            {isLoading ? <FiLoader size={20} /> : 'Entrar'}
+          </Button>
         </Form>
       </Content>
     </Container>

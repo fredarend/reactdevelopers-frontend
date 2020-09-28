@@ -39,11 +39,29 @@ export const FormContainer = styled.div`
       text-align: center;
     }
 
+    button {
+      svg {
+        text-align: center;
+        margin-right: 5px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
+
     > div {
       display: flex;
       align-items: center;
       justify-content: center;
       margin-top: 5px;
+
       button {
         background: transparent;
         border: none;
@@ -64,6 +82,20 @@ export const DevContainer = styled.div`
   background: ${lighten(0.1, '#312e38')};
   overflow-y: scroll;
   padding: 40px;
+
+  .loading-devs {
+    margin-bottom: 10px;
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 export const Dev = styled.div`
@@ -145,6 +177,7 @@ export const Actions = styled.div`
     }
   }
 `;
+
 export const Search = styled.div`
   margin-bottom: 20px;
 
