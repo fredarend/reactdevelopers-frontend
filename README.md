@@ -1,7 +1,6 @@
 <h1 align="center">Welcome to Frontend of React Developers 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" /> <img alt="ReactJS" src="https://img.shields.io/badge/ReactJS-v16.13.1-blue" />  
-  <img alt="typescript" src="https://img.shields.io/badge/typescript-v3.8-yellow" /> <img alt="Node" src="https://img.shields.io/badge/styled-components-v5.1.1-red" /> <img alt="Node" src="https://img.shields.io/badge/eslint-v6.8.0-orange" />
+<img alt="Version" src="https://img.shields.io/badge/version-1.0.0-green.svg?cacheSeconds=2592000" /> <img alt="ReactJS" src="https://img.shields.io/badge/reactjs-v16.13.1-blue" /> <img alt="typescript" src="https://img.shields.io/badge/typescript-v3.8-yellow" /> <img alt="Node" src="https://img.shields.io/badge/styledcomponents-v5.1.1-red" /> <img alt="Node" src="https://img.shields.io/badge/eslint-v6.8.0-orange" />
 </p>
 
 ## Description
