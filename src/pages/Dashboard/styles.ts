@@ -26,7 +26,7 @@ export const FormContainer = styled.div`
   }
 
   img {
-    width: 25%;
+    width: 20%;
   }
 
   form {

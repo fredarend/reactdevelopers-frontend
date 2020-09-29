@@ -16,7 +16,7 @@ export const Content = styled.div`
   width: 100%;
 
   img {
-    width: 20%;
+    width: 15%;
   }
 
   form {
