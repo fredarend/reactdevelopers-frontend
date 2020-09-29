@@ -15,7 +15,7 @@ import * as Yup from 'yup';
 import ReactSelect from 'react-select';
 
 import getValidationErrors from '../../utils/getValidationErrors';
-import { api, config } from '../../services/api';
+import { api } from '../../services/api';
 import { useAuth } from '../../hooks/auth';
 import { useToast } from '../../hooks/toast';
 
@@ -78,7 +78,7 @@ const Dashboard: React.FC = () => {
   const getDevelopers = useCallback(async () => {
     try {
       setIsLoadingDevs(true);
-      await api.get('/developers', config).then(response => {
+      await api.get('/developers').then(response => {
         setDevelopers(response.data);
       });
       setIsLoadingDevs(false);
@@ -133,7 +133,7 @@ const Dashboard: React.FC = () => {
           abortEarly: false,
         });
         setIsLoadingAddDev(true);
-        await api.post('/developers', data, config);
+        await api.post('/developers', data);
 
         addToast({
           type: 'success',
@@ -170,7 +170,7 @@ const Dashboard: React.FC = () => {
     async (id: number) => {
       try {
         setEditDev(true);
-        const { data } = await api.get(`/developers/?id=${id}`, config);
+        const { data } = await api.get(`/developers/?id=${id}`);
         const { developer } = data;
 
         formRef.current?.setFieldValue('id', id);
@@ -215,7 +215,7 @@ const Dashboard: React.FC = () => {
           abortEarly: false,
         });
 
-        await api.put(`/developers/${data.id}`, data, config);
+        await api.put(`/developers/${data.id}`, data);
 
         addToast({
           type: 'success',
@@ -250,7 +250,7 @@ const Dashboard: React.FC = () => {
       try {
         setIsLoadingDelete(true);
 
-        await api.delete(`/developers/${id}`, config);
+        await api.delete(`/developers/${id}`);
         addToast({
           type: 'success',
           title: 'Dev removido com sucesso!',

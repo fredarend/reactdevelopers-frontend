@@ -25,6 +25,7 @@ const AuthProvider: React.FC = ({ children }) => {
     const user = localStorage.getItem('@Icetec:user');
 
     if (token && user) {
+      api.defaults.headers.authorization = `Bearer ${token}`;
       return { token, user: JSON.parse(user) };
     }
 
@@ -42,12 +43,14 @@ const AuthProvider: React.FC = ({ children }) => {
     localStorage.setItem('@Icetec:token', token);
     localStorage.setItem('@Icetec:user', JSON.stringify(user));
 
+    api.defaults.headers.authorization = `Bearer ${token}`;
+
     setData({ token, user });
   }, []);
 
   const signOut = useCallback(() => {
-    const token = localStorage.removeItem('@Icetec:token');
-    const user = localStorage.removeItem('@Icetec:user');
+    localStorage.removeItem('@Icetec:token');
+    localStorage.removeItem('@Icetec:user');
 
     setData({} as AuthState);
   }, []);
