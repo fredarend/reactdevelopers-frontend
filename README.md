@@ -7,7 +7,7 @@
 Frontend of the React Developers, application developed with the purpose of evaluation, to compete for a vacancy in software development company.
 
 ### ✨ [Demo](https://reactdevelopers.fredericobinsfeld.com.br)
-User: admin@admin.com
+User: admin@admin.com <br>
 Password: admin123
 
 ## Install
